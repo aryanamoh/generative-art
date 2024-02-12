@@ -1,5 +1,4 @@
 #include <TFT_eSPI.h>
-#include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_ILI9341.h>
 
@@ -12,7 +11,7 @@
 TFT_eSPI tft = TFT_eSPI();
 
 
-// Array of love poems
+// Global variables
 const char* lovePoems[] = {
     "Roses are red,\nViolets are blue,\nSugar is sweet,\nAnd so are you.",
     "Love is a canvas\nFurnished by nature\nAnd embroidered by \nimagination.",
@@ -25,14 +24,13 @@ const char* lovePoems[] = {
     "In your eyes, \na world revealed, \nLove's language, \nsilently sealed."
 };
 
-// Number of poems in the array
-const int numPoems = sizeof(lovePoems) / sizeof(lovePoems[0]);
+const int numPoems = sizeof(lovePoems) / sizeof(lovePoems[0]); 
 
 unsigned long lastPoemTime = 0;
 unsigned long lastHeartTime = 0;
+
 int poemIndex = 0;
 
-// Various shades of pink and red
 uint16_t colorList[] = {
     tft.color565(255, 0, 127),      // Vivid Pink
     tft.color565(255, 182, 193),    // Light Pink
@@ -46,44 +44,35 @@ uint16_t colorList[] = {
     tft.color565(240, 128, 128)     // Light Coral
 };
 
+
+
 void setup() {
     tft.begin();
-    tft.setRotation(3); // Adjust the rotation if needed
+    tft.setRotation(1); // Landscaoe mode
     tft.fillScreen(TFT_BLACK);
     tft.setTextColor(TFT_WHITE); 
     tft.setTextSize(2);
 
-    //set screen Back Light brightness
+    // Set screen backlight brightness
     pinMode(TFT_BL, OUTPUT);
     ledcSetup(0, 5000, 8); // 0-15, 5000, 8
     ledcAttachPin(TFT_BL, 0); // TFT_BL, 0 - 15
-    ledcWrite(0, 100); // Increase the brightness value (0-255)
+    ledcWrite(0, 40); // Increase the brightness value (0-255)
 }
+
+
 
 void loop() {
     // Clear the screen
     tft.fillScreen(TFT_BLACK);
 
-    // Generate random size and location for the heart
-    int heartSize = random(10, 50);
-    int heartX = random(tft.width() - heartSize);
-    int heartY = random(tft.height() - heartSize);
-
-    // Draw the heart
-    uint16_t randomColor = colorList[random(sizeof(colorList) / sizeof(colorList[0]))];
-
-    int heartWidth = heartSize / 2;
-    int heartHeight = heartSize * 3 / 4;
-
-    tft.fillTriangle(heartX, heartY + heartHeight / 4, heartX + heartSize, heartY + heartHeight / 4, heartX + heartWidth, heartY + heartHeight, randomColor);
-    tft.fillCircle(heartX + heartWidth / 2, heartY + heartHeight / 4, heartWidth / 2, randomColor);
-    tft.fillCircle(heartX + heartWidth * 3 / 2, heartY + heartHeight / 4, heartWidth / 2, randomColor);
-
-
-
+    // Draw 3 hearts
+    for (int i = 0; i < 3; i++) {
+        drawHeart();
+    }
 
     // Display the selected poem
-    tft.setCursor(0, 50);
+    tft.setCursor(0, 40);
     tft.println(lovePoems[poemIndex]);
 
     // Delay for 1 second
@@ -95,4 +84,25 @@ void loop() {
         poemIndex = random(numPoems);
         lastPoemTime = millis();
     }
+}
+
+
+
+void drawHeart() {
+
+    // Random size and location for heart
+    int heartSize = random(10, 50); 
+    int heartX = random(tft.width() - heartSize); 
+    int heartY = random(tft.height() - heartSize); 
+
+    // Random color for heart
+    uint16_t randomColor = colorList[random(sizeof(colorList) / sizeof(colorList[0]))]; 
+
+    int heartWidth = heartSize / 2;
+    int heartHeight = heartSize * 3 / 4;
+
+    // Draw the heart
+    tft.fillTriangle(heartX, heartY + heartHeight / 4, heartX + heartSize, heartY + heartHeight / 4, heartX + heartWidth, heartY + heartHeight, randomColor);
+    tft.fillCircle(heartX + heartWidth / 2, heartY + heartHeight / 4, heartWidth / 2, randomColor);
+    tft.fillCircle(heartX + heartWidth * 3 / 2, heartY + heartHeight / 4, heartWidth / 2, randomColor);
 }
