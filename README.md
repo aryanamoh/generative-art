@@ -1,6 +1,7 @@
 # Generative Art
 This project is a blend of technology and art, creating a dynamic display of love poems and heart shapes on a TFT display. It's built using Arduino and leverages the power of the TFT_eSPI and Adafruit_ILI9341 libraries to control the TFT display.
 
+![](https://github.com/aryanamoh/generative-art/blob/main/mod1-ttgoscreen.gif)
 
 ## Features
 - <b>Dynamic Display:</b> The project continuously generates and displays heart shapes of varying sizes and colors at random positions on the screen. The colors range from vivid pink to light coral, creating a visually appealing effect.
